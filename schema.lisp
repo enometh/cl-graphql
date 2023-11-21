@@ -46,6 +46,7 @@
 (defclass enum () ())
 (defclass input-object () ())
 
+(eval-when (load eval-compile)
 (defun field->slot-definition (schema field)
   (destructuring-bind (name type &rest options/args) field
     (let ((options ())
@@ -65,7 +66,7 @@
                  :list (listp type)
                  :element-type (if (listp type) (car type) type)
                  :arguments arguments
-                 :directives directives))))
+                 :directives directives)))))
 
 (defmacro define-type ((schema symbol &optional name) implements &body options/fields)
   (let ((symbol (schema-name schema symbol))
