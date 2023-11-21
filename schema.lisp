@@ -60,7 +60,7 @@
                       (push (rest thing) directives))
                      (T
                       (push thing arguments))))
-      (list name :initarg (intern name "KEYWORD")
+      (list name :initarg (intern (string-upcase name) "KEYWORD")
                  :accessor name
                  :required (find :required options)
                  :list (listp type)
@@ -69,11 +69,11 @@
                  :directives directives)))))
 
 (defmacro define-type ((schema symbol &optional name) implements &body options/fields)
-  (let ((symbol (schema-name schema symbol))
+  (let ((symbol (schema-name schema symbol :if-does-not-exist :create))
         (options ())
         (fields ())
         (directives ()))
-    (loop for thing in options/args
+    (loop for thing in options/fields
           do (cond ((keywordp (first thing))
                     (push thing options))
                    ((eql '@ (first thing))
@@ -95,6 +95,13 @@
 (defmacro define-input ((schema symbol &optional name) &body fields))
 
 (defgeneric parse-from (data type))
+
+(eval-when (load eval compile)
+  (unless (find-package "GRAPHQL")
+    (make-package "GRAPHQL" :use nil)))
+
+#+nil
+(find-package "GRAPHQL")
 
 (define-type (graphql schema "__Schema") ()
   (types (type) :required)
