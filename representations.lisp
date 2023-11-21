@@ -36,8 +36,18 @@
 (defclass representation-slot (c2mop:standard-slot-definition)
   ((required-p :initarg :required :accessor required-p :initform NIL :type boolean)
    (list-p :initarg :list :accessor list-p :initform NIL :type boolean)
-   (element-type :initarg :element-type :accessor element-type :initform (error "ELEMENT-TYPE required."))))
+   (element-type :initarg :element-type :accessor element-type
+		 :initform
+		 #+nil
+		 (error "ELEMENT-TYPE required.")
+;;		 #+nil
+		 nil)))
 )
+
+#+nil
+(user::undefmethod initialize-instance :after ((class representation-slot) &key required list element-type)
+  (unless element-type
+    (error "ELEMENT-TYPE required.")))
 
 (eval-when (load eval compile)
 (defclass direct-representation-slot (representation-slot c2mop:direct-slot-definition)
