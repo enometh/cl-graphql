@@ -64,19 +64,21 @@
                 (when (char= #\" (peek stream))
                   (read-char stream)
                   (when (char= #\" (peek stream))
+		    (read-char stream)
                     (return))
-                  (write-char #\" stream))
-                (write-char #\" stream))
+                  (write-char #\" buffer))
+                (write-char #\" buffer))
                (T
                 (write-char char buffer))))))
 
 (defun read-string (stream)
-  (if (char= #\" (read-char stream))
-      (cond ((eql #\" (peek stream NIL))
-             (read-char stream)
-             (read-block-string stream))
-            (T
-             ""))
+  (if (eql #\" (peek stream NIL))
+      (progn (read-char stream)
+	     (cond ((eql #\" (peek stream NIL))
+		    (read-char stream)
+		    (read-block-string stream))
+		   (T
+		    "")))
       (read-base-string stream)))
 
 (defun read-integer (stream)
