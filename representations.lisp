@@ -104,12 +104,17 @@
      ,direct-slots
      ,@options))
 
-(define-representation document ()
-    ((definitions :element-type definition :list T)))
 
 ;;; Abstract
 (define-representation definition ()
     ())
+
+#+nil
+(find-class 'definition)
+
+(define-representation document ()
+    ((definitions :element-type definition :list T)))
+
 
 ;;; Abstract
 (define-representation operation (definition)
