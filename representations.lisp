@@ -6,6 +6,7 @@
 
 (in-package #:org.shirakumo.graphql)
 
+(eval-when (load eval compile)
 (deftype name ()
   `(satisfies name-p))
 
@@ -25,7 +26,9 @@
 
 (defclass representation-class (standard-class)
   ())
+)
 
+(eval-when (load eval compile)
 (defmethod c2mop:validate-superclass ((a representation-class) (b T)) NIL)
 (defmethod c2mop:validate-superclass ((a representation-class) (b standard-class)) T)
 (defmethod c2mop:validate-superclass ((a standard-class) (b representation-class)) NIL)
@@ -34,12 +37,15 @@
   ((required-p :initarg :required :accessor required-p :initform NIL :type boolean)
    (list-p :initarg :list :accessor list-p :initform NIL :type boolean)
    (element-type :initarg :element-type :accessor element-type :initform (error "ELEMENT-TYPE required."))))
+)
 
+(eval-when (load eval compile)
 (defclass direct-representation-slot (representation-slot c2mop:direct-slot-definition)
   ())
 
 (defclass effective-representation-slot (representation-slot c2mop:effective-slot-definition)
   ())
+)
 
 (defmethod c2mop:direct-slot-definition-class ((class representation-class) &rest initargs)
   (if (getf initargs :element-type)
