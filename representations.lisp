@@ -58,6 +58,8 @@
 )
 
 (defmethod c2mop:direct-slot-definition-class ((class representation-class) &rest initargs)
+  (find-class 'direct-representation-slot)
+  #+nil
   (if (getf initargs :element-type)
       (find-class 'direct-representation-slot)
       (find-class 'c2mop:standard-direct-slot-definition)))
@@ -65,6 +67,10 @@
 (defmethod c2mop:effective-slot-definition-class ((class representation-class) &rest _)
   (declare (ignore _))
   (find-class 'effective-representation-slot))
+
+#+nil
+(defmethod pcl:slot-definition-location ((definition representation-slot))
+  (warn "WTF"))
 
 (defmethod c2mop:compute-effective-slot-definition ((class representation-class) name dslots)
   (let* ((direct (find name dslots :key #'c2mop:slot-definition-name))
