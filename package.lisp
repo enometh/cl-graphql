@@ -8,6 +8,7 @@
   (:nicknames #:org.shirakumo.graphql)
   (:use #:cl)
   ;;
+  (:shadow :union)
   (:export
    ))
 
