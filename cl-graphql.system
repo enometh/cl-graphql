@@ -25,6 +25,7 @@
                (:file "representations")
                (:file "printer")
                (:file "reader")
+	       (:file "type-class")
                (:file "schema")
                (:file "generate")
                (:file "documentation")))
