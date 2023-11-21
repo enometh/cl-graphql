@@ -46,7 +46,7 @@
 (defclass enum () ())
 (defclass input-object () ())
 
-(eval-when (load eval-compile)
+(eval-when (load eval compile)
 (defun field->slot-definition (schema field)
   (destructuring-bind (name type &rest options/args) field
     (let ((options ())
