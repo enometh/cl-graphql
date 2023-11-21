@@ -45,7 +45,8 @@
                       (read-unicode-escaped stream)
                       (write-char next buffer))))
                ((#\Return #\Linefeed)
-                (error "FIXME (unexpected newline)"))
+		(with-simple-restart (cont "Cont")
+		  (error (format nil  "FIXME (unexpected newline)~@[ at position ~S~]" (ignore-errors (file-position stream))))))
                (T
                 (write-char char buffer))))))
 
@@ -134,7 +135,8 @@
     ((char= char #\.)
      (unless (and (char= #\. (read-char stream))
                   (char= #\. (read-char stream)))
-       (error "FIXME (loose dot)"))
+       (error (format nil "FIXME (loose dot)~@[ at position ~S~]"
+		      (ignore-errors (file-position stream)))))
      :|...|)
     ;; Name
     ((or (char= #\_ char)
@@ -152,7 +154,7 @@
      (read-string stream))
     ;; Failure
     (T
-     (error "FIXME (invalid char)"))))
+     (error (format nil "FIXME (invalid char)~@[ at position ~S~]" (ignore-errors (file-position stream)))))))
 
 (defun lex (stream)
   (loop for char = (read-char stream NIL NIL)
