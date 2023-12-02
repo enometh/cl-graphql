@@ -57,6 +57,14 @@
   ())
 )
 
+(defmethod closer-mop:reader-method-class ((class representation-class) (slot direct-representation-slot) &rest initargs)
+  (declare (ignore initargs))
+  (find-class 'c2mop:standard-reader-method))
+
+(defmethod closer-mop:writer-method-class ((class representation-class) (direct-slot direct-representation-slot) &rest initargs)
+  (declare (ignore initargs))
+  (find-class 'c2mop:standard-writer-method))
+
 (defmethod c2mop:direct-slot-definition-class ((class representation-class) &rest initargs)
   (find-class 'direct-representation-slot)
   #+nil
@@ -97,11 +105,19 @@
   (when (required-p slot)
     (error "FIXME (required slot cannot be unbound)")))
 
+(defun add-accessors (direct-slots)
+  (loop for direct-slot in direct-slots
+	for slot-name = (car direct-slot)
+	collect (if (or  (find :reader (cdr direct-slot))
+			 (find :accessor (cdr direct-slot)))
+		    direct-slot
+		    (append direct-slot (list :reader slot-name)))))
+
 (defmacro define-representation (name direct-superclasses direct-slots &rest options)
   (unless (find :metaclass options :key #'first)
     (push '(:metaclass representation-class) options))
   `(defclass ,name ,direct-superclasses
-     ,direct-slots
+     ,(add-accessors direct-slots)
      ,@options))
 
 
