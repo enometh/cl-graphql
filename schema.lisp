@@ -68,6 +68,18 @@
                  :arguments arguments
                  :directives directives)))))
 
+
+;; ad-hoc. maybe this could inherit ccl::type-class or clos
+;; implementation specific typeclass
+(defclass type-class (standard-class)
+  ()
+  (:documentation "Metaclass of classes denoting types"))
+
+(defmethod validate-superclass ((class type-class) (super standard-class)) t)
+
+(defmethod validate-superclass ((class standard-class) (super type-class)) nil)
+
+
 (defmacro define-type ((schema symbol &optional name) implements &body options/fields)
   (let ((symbol (schema-name schema symbol :if-does-not-exist :create))
         (options ())
