@@ -83,13 +83,12 @@
                  ((source-character-p char)
                   (write-char char stream))
                  (T
-                  (format stream "\\u~4,'0d"))))
+                  (format stream "\\u~4,'0d" (char-code char)))))
   (write-char #\" stream))
 
 (define-object-writer (vector stream)
   (write-char #\[ stream)
   (when (< 0 (length vector))
-    (write-object (aref vector i) stream)
     (loop for i from 1 below (length vector)
           do (write-string ", " stream)
              (write-object (aref vector i) stream)))
@@ -111,7 +110,7 @@
     (write-object definition stream)))
 
 (define-object-writer (operation stream)
-  (when name
+  (when (name operation)
     (write-name (name operation) stream))
   (when (variable-definitions operation)
     (write-char #\( stream)
@@ -122,7 +121,7 @@
   (dolist (directive (directives operation))
     (write-indent stream)
     (write-object directive stream))
-  (write-selection-set (selection-set operation)))
+  (write-selection-set (selection-set operation) stream))
 
 (define-object-writer (query stream)
   (write-indent stream)
@@ -141,11 +140,11 @@
     (write-string ": " stream))
   (write-name (name field) stream)
   (when (arguments field)
-    (write-arguments field))
+    (write-arguments field stream))
   (dolist (directive (directives field))
     (write-object directive stream))
   (when (selection-set field)
-    (write-selection-set (selection-set field))))
+    (write-selection-set (selection-set field) stream)))
 
 (define-object-writer (fragment-spread stream)
   (write-indent stream)
@@ -157,10 +156,10 @@
 (define-object-writer (fragment stream)
   (when (type-condition fragment)
     (write-string "on " stream)
-    (write-object (type-condition fragment)))
-  (dolist (directive (directives field))
+    (write-object (type-condition fragment) stream))
+  (dolist (directive (directives fragment))
     (write-object directive stream))
-  (write-selection-set (selection-set field)))
+  (write-selection-set (selection-set fragment) stream))
 
 (define-object-writer (inline-fragment stream)
   (write-indent stream)
@@ -181,7 +180,7 @@
 
 (define-object-writer (list-type stream)
   (write-char #\[ stream)
-  (write-object (type list-type) stream)
+  (write-object (name list-type) stream)
   (write-char #\] stream))
 
 (define-object-writer (directive stream)
