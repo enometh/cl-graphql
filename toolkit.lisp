@@ -58,7 +58,7 @@
                              (T (write-char (char-downcase char) out))))))))
 
 (defun schema-package-name (schema)
-  (format NIL "ORG.SHIRAKUMO.GRAPHQL.SCHEMA.~@(a~)" schema))
+  (format NIL "ORG.SHIRAKUMO.GRAPHQL.SCHEMA.~@(~a~)" schema))
 
 (defun schema-package (schema &key (if-does-not-exist :error))
   (let* ((name (schema-package-name schema))
